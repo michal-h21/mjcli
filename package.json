@@ -1,0 +1,24 @@
+{
+  "name": "mjcli",
+  "version": "1.0.0",
+  "description": "Convert MathML or LaTeX math in HTML pages to plain HTML",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/michal-h21/mjcli.git"
+  },
+  "keywords": [
+    "MathML",
+    "MathJax",
+    "LaTeX"
+  ],
+  "author": "Michal Hoftich",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/michal-h21/mjcli/issues"
+  },
+  "homepage": "https://github.com/michal-h21/mjcli#readme"
+}
