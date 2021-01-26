@@ -2,7 +2,8 @@
 
 /*************************************************************************
  *
- *  direct/tex2chtml-page
+ *  This is a modified example taken from MathJax Node Demos
+ *  https://github.com/mathjax/MathJax-demos-node
  *
  *  Uses MathJax v3 to convert all TeX in an HTML document.
  *
@@ -23,45 +24,56 @@
  *  limitations under the License.
  */
 
-//
-//  Load the packages needed for MathJax
-//
-const {mathjax} = require('mathjax-full/js/mathjax.js');
-const {TeX} = require('mathjax-full/js/input/tex.js');
-const {CHTML} = require('mathjax-full/js/output/chtml.js');
-const {liteAdaptor} = require('mathjax-full/js/adaptors/liteAdaptor.js');
-const {RegisterHTMLHandler} = require('mathjax-full/js/handlers/html.js');
-const {AssistiveMmlHandler} = require('mathjax-full/js/a11y/assistive-mml.js');
-
+// this is used arguments
 const {AllPackages} = require('mathjax-full/js/input/tex/AllPackages.js');
-
-require('mathjax-full/js/util/entities/all.js');
-
 //
 //  Get the command-line arguments
 //
 var argv = require('yargs')
-    .demand(1).strict()
-    .usage('$0 [options] file.html > converted.html')
-    .options({
-        em: {
-            default: 16,
-            describe: 'em-size in pixels'
-        },
-        ex: {
-            default: 8,
-            describe: 'ex-size in pixels'
-        },
-        packages: {
-            default: AllPackages.sort().join(', '),
-            describe: 'the packages to use, e.g. "base, ams"'
-        },
-        fontURL: {
-            default: 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2',
-            describe: 'the URL to use for web fonts'
-        }
-    })
-    .argv;
+  .demand(1).strict()
+  .usage('$0 [options] file.html > converted.html')
+  .options({
+    em: {
+      default: 16,
+      describe: 'em-size in pixels'
+    },
+    ex: {
+      default: 8,
+      describe: 'ex-size in pixels'
+    },
+    latex: {
+      alias: "l",
+      default: false,
+      describt: "Convert LaTeX math",
+      type: "boolean"
+    },
+    mathml: {
+      alias: "m",
+      default: true,
+      describt: "Convert MathML math",
+      type: "boolean"
+    },
+    packages: {
+      default: AllPackages.sort().join(', '),
+      describe: 'the packages to use, e.g. "base, ams"'
+    },
+    fontURL: {
+      default: 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2',
+      describe: 'the URL to use for web fonts'
+    }
+  })
+  .argv;
+
+//
+//  Load the packages needed for MathJax
+//
+const {mathjax} = require('mathjax-full/js/mathjax.js');
+const {CHTML} = require('mathjax-full/js/output/chtml.js');
+const {liteAdaptor} = require('mathjax-full/js/adaptors/liteAdaptor.js');
+const {RegisterHTMLHandler} = require('mathjax-full/js/handlers/html.js');
+const {AssistiveMmlHandler} = require('mathjax-full/js/a11y/assistive-mml.js');
+require('mathjax-full/js/util/entities/all.js');
+
 
 //
 //  Read the HTML file
@@ -74,10 +86,20 @@ const htmlfile = require('fs').readFileSync(argv._[0], 'utf8');
 const adaptor = liteAdaptor({fontSize: argv.em});
 AssistiveMmlHandler(RegisterHTMLHandler(adaptor));
 
+//  Declare tex input object, it will be initialized later
+let tex = null;
 //
 //  Create input and output jax and a document using them on the content from the HTML file
-//
-const tex = new TeX({packages: argv.packages.split(/\s*,\s*/), inlineMath: [['$','$']]});
+//  We support either MathML (default) or LaTeX math
+if(argv.mathml==true) {
+  const {MathML} = require('mathjax-full/js/input/mathml.js');
+  tex = new MathML();
+} else {
+  const {TeX} = require('mathjax-full/js/input/tex.js');
+  tex = new TeX({packages: argv.packages.split(/\s*,\s*/), inlineMath: [['$','$']]});
+}
+
+
 const chtml = new CHTML({fontURL: argv.fontURL, exFactor: argv.ex / argv.em});
 const html = mathjax.document(htmlfile, {InputJax: tex, OutputJax: chtml});
 
