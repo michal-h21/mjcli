@@ -91,12 +91,12 @@ let tex = null;
 //
 //  Create input and output jax and a document using them on the content from the HTML file
 //  We support either MathML (default) or LaTeX math
-if(argv.mathml==true) {
+if(argv.latex==true) {
+  const {TeX} = require('mathjax-full/js/input/tex.js');
+  tex = new TeX({packages: argv.packages.split(/\s*,\s*/), inlineMath: [['$','$'], ["\\(","\\)"]]});
+} else {
   const {MathML} = require('mathjax-full/js/input/mathml.js');
   tex = new MathML();
-} else {
-  const {TeX} = require('mathjax-full/js/input/tex.js');
-  tex = new TeX({packages: argv.packages.split(/\s*,\s*/), inlineMath: [['$','$']]});
 }
 
 
