@@ -20,7 +20,7 @@
     "LaTeX"
   ],
   "author": "Michal Hoftich",
-  "license": "ISC",
+  "license": "Apache",
   "bugs": {
     "url": "https://github.com/michal-h21/mjcli/issues"
   },
