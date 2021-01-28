@@ -5,8 +5,9 @@ files, either in MathML or LaTeX formats, to plain HTML.
 
 ## Usage
 
-    mjcli [options] file.html > converted.html
+    mjcli [options] <filename> 
     
+    <filemame>      Input file name. Process standard input if ommited
     Options:
       --help        Show help                                              [boolean]
       --version     Show version number                                    [boolean]

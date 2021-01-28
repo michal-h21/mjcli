@@ -30,8 +30,8 @@ const {AllPackages} = require('mathjax-full/js/input/tex/AllPackages.js');
 //  Get the command-line arguments
 //
 var argv = require('yargs')
-  .demand(1).strict()
-  .usage('$0 [options] file.html > converted.html')
+  .demand(0).strict()
+  .usage('$0 [options] <filename>')
   .options({
     em: {
       default: 16,
@@ -72,13 +72,20 @@ const {CHTML} = require('mathjax-full/js/output/chtml.js');
 const {liteAdaptor} = require('mathjax-full/js/adaptors/liteAdaptor.js');
 const {RegisterHTMLHandler} = require('mathjax-full/js/handlers/html.js');
 const {AssistiveMmlHandler} = require('mathjax-full/js/a11y/assistive-mml.js');
+const fs = require('fs');
 require('mathjax-full/js/util/entities/all.js');
 
 
 //
 //  Read the HTML file
 //
-const htmlfile = require('fs').readFileSync(argv._[0], 'utf8');
+let htmlfile = null;
+if(argv._[0]){
+  htmlfile = fs.readFileSync(argv._[0], 'utf8');
+} else {
+  // read from stdin
+  htmlfile = fs.readFileSync(0, 'utf8');
+}
 
 //
 //  Create DOM adaptor and register it for HTML documents
@@ -101,6 +108,7 @@ if(argv.latex==true) {
 
 
 const chtml = new CHTML({fontURL: argv.fontURL, exFactor: argv.ex / argv.em});
+
 const html = mathjax.document(htmlfile, {InputJax: tex, OutputJax: chtml});
 
 //
