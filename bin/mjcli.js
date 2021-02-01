@@ -44,7 +44,7 @@ var argv = require('yargs')
     latex: {
       alias: "l",
       default: false,
-      describt: "Convert LaTeX math",
+      describe: "Convert LaTeX math",
       type: "boolean"
     },
     mathml: {
@@ -57,6 +57,13 @@ var argv = require('yargs')
       default: AllPackages.sort().join(', '),
       describe: 'the packages to use, e.g. "base, ams"'
     },
+    svg: {
+      alias: "s",
+      default: false,
+      describe: "output math as SVG",
+      type: "boolean"
+    },
+
     fontURL: {
       default: 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2',
       describe: 'the URL to use for web fonts'
@@ -68,7 +75,6 @@ var argv = require('yargs')
 //  Load the packages needed for MathJax
 //
 const {mathjax} = require('mathjax-full/js/mathjax.js');
-const {CHTML} = require('mathjax-full/js/output/chtml.js');
 const {liteAdaptor} = require('mathjax-full/js/adaptors/liteAdaptor.js');
 const {RegisterHTMLHandler} = require('mathjax-full/js/handlers/html.js');
 const {AssistiveMmlHandler} = require('mathjax-full/js/a11y/assistive-mml.js');
@@ -106,10 +112,19 @@ if(argv.latex==true) {
   tex = new MathML();
 }
 
+// 
+let output = null;
 
-const chtml = new CHTML({fontURL: argv.fontURL, exFactor: argv.ex / argv.em});
+if(argv.svg == true) {
+  const {SVG} = require('mathjax-full/js/output/svg.js');
+  output = new SVG({fontCache: 'local'});
+}
+else{
+  const {CHTML} = require('mathjax-full/js/output/chtml.js');
+  output  = new CHTML({fontURL: argv.fontURL, exFactor: argv.ex / argv.em});
+}
 
-const html = mathjax.document(htmlfile, {InputJax: tex, OutputJax: chtml});
+const html = mathjax.document(htmlfile, {InputJax: tex, OutputJax: output});
 
 //
 //  Typeset the document

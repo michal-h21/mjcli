@@ -19,6 +19,7 @@ files, either in MathML or LaTeX formats, to plain HTML.
           [default: "action, ams, amscd, base, bbox, boldsymbol, braket, bussproofs,
            cancel, color, configmacros, enclose, extpfeil, html, mhchem, newcommand,
                        noerrors, noundefined, tagformat, textmacros, unicode, verb"]
+      --svg, -s     output math as SVG                    [boolean] [default: false]
       --fontURL     the URL to use for web fonts                           [default:
             "https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2"]
 
