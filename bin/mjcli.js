@@ -63,7 +63,12 @@ var argv = require('yargs')
       describe: "output math as SVG",
       type: "boolean"
     },
-
+    tags: {
+      alias: "t",
+      default: "ams",
+      describe: "whether equations are numbered and how; 'ams', 'all', or 'none'",
+      type: "string"
+    },
     fontURL: {
       default: 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2',
       describe: 'the URL to use for web fonts'
@@ -106,7 +111,12 @@ let tex = null;
 //  We support either MathML (default) or LaTeX math
 if(argv.latex==true) {
   const {TeX} = require('mathjax-full/js/input/tex.js');
-  tex = new TeX({packages: argv.packages.split(/\s*,\s*/), inlineMath: [['$','$'], ["\\(","\\)"]]});
+  tex = new TeX({
+    processEscapes: false,
+    packages: argv.packages.split(/\s*,\s*/),
+    inlineMath: [['$','$'], ["\\(","\\)"]],
+    tags: argv.tags
+  });
 } else {
   const {MathML} = require('mathjax-full/js/input/mathml.js');
   tex = new MathML();
